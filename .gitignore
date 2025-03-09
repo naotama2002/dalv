@@ -1,12 +1,23 @@
-# Deno compiled binaries
-/dalv
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/bin/
 
-# Deno cache directories
-/.deno/
-/.cache/
+# Test binary, built with `go test -c`
+*.test
 
-# Node modules (if using npm compatibility)
-node_modules/
+# Output of the go coverage tool
+*.out
+*.prof
+
+# Go workspace file
+go.work
+
+# Dependency directories (remove the comment below to include it)
+# vendor/
 
 # Environment variables
 .env
@@ -19,6 +30,9 @@ node_modules/
 .vscode/*
 !.vscode/extensions.json
 !.vscode/settings.json
+.idea/
+*.swp
+*.swo
 .idea/
 *.suo
 *.ntvs*

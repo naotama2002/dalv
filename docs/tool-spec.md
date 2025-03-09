@@ -2,16 +2,14 @@
 
 ## 概要
 
-`dalv`は、AWS Application Load Balancer (ALB) のS3ログファイルをDuckDBを使って簡単にクエリするためのコマンドラインツールです。S3バケットパスを指定して起動し、インタラクティブなDuckDBコンソールを提供します。
+`dalv`は、AWS Application Load Balancer (ALB) のS3ログファイルをDuckDBを使って簡単にクエリするためのコマンドラインツールです。S3バケットパスを指定して、DuckDBを使ってALBログを分析できるようにします。
 
 ## 技術スタック
 
-- 言語: TypeScript
-- 実行環境: Deno 2.2.3
+- 言語: Go 1.22
 - 主要依存関係:
-  - DuckDB: 1.2.0
-  - AWS SDK for JavaScript v3.764.0 / https://github.com/aws/aws-sdk-js-v3
-  - Cliffy (コマンドライン引数パーサー): 最新バージョン
+  - DuckDB: システムにインストールされたバージョン（外部コマンドとして利用）
+  - AWS SDK for Go
 
 ## 機能要件
 
@@ -28,8 +26,6 @@ dalv [options] <s3-path>
 #### オプション
 
 - `-t, --table <name>`: 作成するテーブル名 (デフォルト: 自動生成)
-- `-o, --output <path>`: クエリ結果の出力先ファイルパス
-- `-f, --format <format>`: 出力フォーマット (csv, json, parquet) (デフォルト: csv)
 - `-h, --help`: ヘルプ情報を表示
 - `-v, --version`: バージョン情報を表示
 
@@ -79,40 +75,37 @@ dalv [options] <s3-path>
    - `.export <file> <format>`: クエリ結果をファイルにエクスポート
    - `.quit` または `.exit`: コンソールを終了
 
-### 5. エラーハンドリング
+### 3. エラーハンドリング
 
-1. 接続エラー
+1. システムエラー
+   - DuckDBがインストールされていない場合
+   - DuckDBのバージョンが互換性がない場合
+
+2. 入力エラー
+   - S3パスの形式が不正な場合
+   - 必須パラメータが不足している場合
+
+3. 実行時エラー
+   - DuckDBの実行に失敗した場合
    - AWS認証情報の問題
-   - S3バケットへのアクセス権限の問題
-   - ネットワーク接続の問題
-
-2. クエリエラー
-   - SQL構文エラー
-   - メモリ不足エラー
-   - タイムアウトエラー
-
-3. ファイル形式エラー
-   - ログファイルの形式が想定と異なる場合
 
 ## 非機能要件
 
 ### 1. パフォーマンス
 
-- 大量のログファイル（数GB）を効率的に処理できること
-- クエリ実行時のメモリ使用量の最適化
-- 長時間実行クエリのサポート
+- DuckDBの処理能力を最大限に活用
+- 効率的なSQLクエリの生成
 
 ### 2. セキュリティ
 
 - AWS認証情報の安全な取り扱い
 - 認証情報のログやコンソールへの出力禁止
-- 一時的なファイルの安全な管理
 
 ### 3. ユーザビリティ
 
 - 明確なエラーメッセージ
-- 進行状況の表示
-- 初回使用時のガイダンス表示
+- インストール手順の明確化
+- 使用例の提供
 
 ## プロジェクト構造
 
@@ -121,30 +114,24 @@ dalv/
 ├── .github/
 │   └── workflows/
 │       └── ci.yml
-├── src/
+├── cmd/
+│   └── dalv/
+│       └── main.go        # エントリーポイント
+├── internal/
 │   ├── cli/
-│   │   ├── args.ts         # コマンドライン引数の処理
-│   │   ├── console.ts      # インタラクティブコンソール
-│   │   └── commands.ts     # 特殊コマンドの実装
+│   │   └── cli.go         # コマンドライン引数の処理
 │   ├── duckdb/
-│   │   ├── client.ts       # DuckDB接続クライアント
-│   │   ├── schema.ts       # ALBログスキーマ定義
-│   │   └── queries.ts      # 共通クエリ
-│   ├── aws/
-│   │   ├── auth.ts         # AWS認証
-│   │   └── s3.ts           # S3操作
-│   ├── utils/
-│   │   ├── logger.ts       # ロギング
-│   │   ├── formatter.ts    # 出力フォーマット
-│   │   └── validator.ts    # 入力検証
-│   ├── types/
-│   │   └── alb-log.ts      # ALBログ型定義
-│   └── main.ts             # エントリーポイント
-├── test/
-│   ├── cli.test.ts
-│   ├── duckdb.test.ts
-│   └── aws.test.ts
-├── deno.json              # Deno設定
+│   │   ├── executor.go    # DuckDB実行ロジック
+│   │   └── sql.go         # SQL生成ロジック
+│   ├── validator/
+│   │   └── validator.go   # 入力検証
+│   └── schema/
+│       └── alb.go         # ALBログスキーマ定義
+├── pkg/
+│   └── utils/
+│       └── logger.go      # ロギングユーティリティ
+├── go.mod                 # Goモジュール定義
+├── go.sum                 # 依存関係ハッシュ
 ├── LICENSE
 └── README.md
 ```
