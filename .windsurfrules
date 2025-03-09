@@ -41,11 +41,9 @@
 
 ## 技術スタックと制約
 ### コア技術
-- Deno 2.2.3
-- DuckDB: 1.2.0
-- AWS SDK for JavaScript v3.764.0 / https://github.com/aws/aws-sdk-js-v3
-### 開発ツール
-- deno lint: ^0.1.0
+- Go 1.22
+- DuckDB: xxxx
+- AWS SDK for Go v2.15.1 / https://github.com/aws/aws-sdk-g
 
 ## 品質管理プロトコル
 ### 1. コード品質
@@ -67,42 +65,23 @@
 
 ## プロジェクト構造規約
 
-dalv/
-├── .github/
-│   └── workflows/
-│       └── ci.yml
-├── src/
-│   ├── cli/
-│   │   ├── args.ts         # コマンドライン引数の処理
-│   │   ├── console.ts      # インタラクティブコンソール
-│   │   └── commands.ts     # 特殊コマンドの実装
-│   ├── duckdb/
-│   │   ├── client.ts       # DuckDB接続クライアント
-│   │   ├── schema.ts       # ALBログスキーマ定義
-│   │   └── queries.ts      # 共通クエリ
-│   ├── aws/
-│   │   ├── auth.ts         # AWS認証
-│   │   └── s3.ts           # S3操作
-│   ├── utils/
-│   │   ├── logger.ts       # ロギング
-│   │   ├── formatter.ts    # 出力フォーマット
-│   │   └── validator.ts    # 入力検証
-│   ├── types/
-│   │   └── alb-log.ts      # ALBログ型定義
-│   └── main.ts             # エントリーポイント
-├── test/
-│   ├── cli.test.ts
-│   ├── duckdb.test.ts
-│   └── aws.test.ts
-├── deno.json              # Deno設定
-├── LICENSE
-└── README.md
+## プロジェクト構成
+- `dalv/`
+  - `cmd/`: エントリーポイント
+    - `dalv/`: `main.go`を含む
+  - `internal/`: 内部実装
+    - `duckdb/`: DuckDB実行ロジック
+    - `schema/`: ALBログスキーマ定義
+    - `validator/`: 入力検証
+  - `pkg/`: ユーティリティ
+    - `utils/`: ロギングユーティリティ
+  - `go.mod`, `go.sum`: Goモジュール定義
+
+
 
 ## 重要な制約
 1. **変更禁止ファイル**
-   - `app/lib/api/client.ts`
-   - `app/lib/api/types.ts`
-   - `app/lib/api/config.ts`
+ 
 2. **バージョン管理**
    - 技術スタックのバージョン変更は要承認
    - AIモデルのバージョンは固定
