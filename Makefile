@@ -28,6 +28,7 @@ test:
 lint:
 	@echo "Running linter..."
 	$(GO) vet ./...
+	$(GOLINT) ./...
 	@echo "Linting completed"
 
 # クリーンターゲット
