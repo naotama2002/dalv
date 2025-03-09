@@ -17,7 +17,9 @@ jobs:
           go-version-file: 'go.mod'
 
       - name: Install dependencies
-        run: go mod download
+        run: |
+          go mod download
+          go install golang.org/x/lint/golint@latest
 
       - name: Build
         run: make build
