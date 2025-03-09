@@ -6,7 +6,7 @@ BUILD_DIR=./bin
 MAIN_PATH=./cmd/dalv
 GO=go
 GOTEST=$(GO) test
-GOLINT=$(GO) run golang.org/x/lint/golint
+GOLINT=golint
 
 # デフォルトターゲット
 all: clean lint test build
@@ -28,6 +28,7 @@ test:
 lint:
 	@echo "Running linter..."
 	$(GO) vet ./...
+	$(GOLINT) ./...
 	@echo "Linting completed"
 
 # クリーンターゲット
