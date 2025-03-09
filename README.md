@@ -14,12 +14,56 @@ AWS Application Load Balancer (ALB) のS3ログファイルをDuckDBを使って
 
 ## インストール
 
+### GitHubリリースからのインストール（推奨）
+
+各プラットフォーム向けのビルド済みバイナリを[GitHubリリースページ](https://github.com/naotama2002/dalv/releases)から直接ダウンロードできます。
+
+#### 最新バージョンのインストール
+
+```bash
+# macOS (Intel) の場合
+curl -L https://github.com/naotama2002/dalv/releases/latest/download/dalv-darwin-amd64 -o dalv
+chmod +x dalv
+sudo mv dalv /usr/local/bin/
+
+# macOS (Apple Silicon) の場合
+curl -L https://github.com/naotama2002/dalv/releases/latest/download/dalv-darwin-arm64 -o dalv
+chmod +x dalv
+sudo mv dalv /usr/local/bin/
+
+# Linux (x86_64) の場合
+curl -L https://github.com/naotama2002/dalv/releases/latest/download/dalv-linux-amd64 -o dalv
+chmod +x dalv
+sudo mv dalv /usr/local/bin/
+
+# Linux (ARM64) の場合
+curl -L https://github.com/naotama2002/dalv/releases/latest/download/dalv-linux-arm64 -o dalv
+chmod +x dalv
+sudo mv dalv /usr/local/bin/
+```
+
+#### 特定バージョンのインストール
+
+特定のバージョンをインストールする場合は、URLのパスに `latest` の代わりにバージョン番号（例: `v0.1.0`）を指定します。
+
+```bash
+# 例: macOS (Apple Silicon) に v0.1.0 をインストールする場合
+curl -L https://github.com/naotama2002/dalv/releases/download/v0.1.0/dalv-darwin-arm64 -o dalv
+chmod +x dalv
+sudo mv dalv /usr/local/bin/
+```
+
+Windows の場合は、[GitHubリリースページ](https://github.com/naotama2002/dalv/releases)から `dalv-windows-amd64.exe` をダウンロードし、任意のディレクトリに配置して PATH に追加してください。
+
 ### Makeを使用したビルドとインストール
 
 ```bash
 # ソースの取得
 git clone https://github.com/naotama2002/dalv.git
 cd dalv
+
+# 特定のバージョンを使用する場合（オプション）
+git checkout v0.1.0  # 使用したいバージョンのタグを指定
 
 # ビルド（bin/dalvが生成されます）
 make build

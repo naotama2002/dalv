@@ -3,6 +3,8 @@ package cli
 import (
 	"flag"
 	"fmt"
+	
+	"github.com/naotama2002/dalv/internal/version"
 )
 
 // CLI はコマンドライン引数を処理するための構造体です
@@ -76,5 +78,5 @@ func (c *CLI) printHelp() {
 
 // printVersion はバージョン情報を表示します
 func (c *CLI) printVersion() {
-	fmt.Println("dalv バージョン 1.0.0")
+	fmt.Println(version.VersionString())
 }
