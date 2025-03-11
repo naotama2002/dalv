@@ -25,7 +25,6 @@ func main() {
 
 	// ロガーの初期化
 	logger := utils.NewLogger(utils.INFO)
-	logger.Info("dalvを起動しています...")
 
 	// コマンドライン引数の解析
 	cliParser := cli.NewCLI(os.Args[1:])
