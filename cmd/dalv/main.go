@@ -12,6 +12,13 @@ import (
 	"github.com/naotama2002/dalv/pkg/utils"
 )
 
+// テスト時にモック化するための変数
+var (
+	osExecutable        = os.Executable
+	osStat              = os.Stat
+	readVersionFromFile = version.ReadVersionFromFile
+)
+
 func main() {
 	// バージョン情報の初期化
 	initVersion()
@@ -74,7 +81,7 @@ func main() {
 // initVersion はバージョン情報を初期化します
 func initVersion() {
 	// 実行ファイルのパスを取得
-	execPath, err := os.Executable()
+	execPath, err := osExecutable()
 	if err != nil {
 		return
 	}
@@ -86,13 +93,13 @@ func initVersion() {
 	versionFilePath := filepath.Join(execDir, "../version.txt")
 
 	// バージョンファイルが存在するか確認
-	if _, err := os.Stat(versionFilePath); os.IsNotExist(err) {
+	if _, err := osStat(versionFilePath); os.IsNotExist(err) {
 		// 開発環境の場合、プロジェクトルートからの相対パスを試す
 		versionFilePath = "version.txt"
 	}
 
 	// バージョンファイルからバージョン情報を読み込む
-	ver, err := version.ReadVersionFromFile(versionFilePath)
+	ver, err := readVersionFromFile(versionFilePath)
 	if err == nil {
 		// バージョン情報を設定
 		version.Version = ver

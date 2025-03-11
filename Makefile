@@ -25,6 +25,12 @@ test:
 	$(GOTEST) -v ./...
 	@echo "Tests completed"
 
+# テストカバレッジターゲット
+test-cover:
+	@echo "Running tests with coverage..."
+	$(GOTEST) -cover ./...
+	@echo "Coverage tests completed"
+
 # リントターゲット
 lint:
 	@echo "Running linter..."
@@ -47,10 +53,11 @@ install: build
 # ヘルプターゲット
 help:
 	@echo "Available targets:"
-	@echo "  all      - Run clean, lint, test, and build"
-	@echo "  build    - Build the binary"
-	@echo "  test     - Run tests"
-	@echo "  lint     - Run linter"
-	@echo "  clean    - Remove build artifacts"
-	@echo "  install  - Install binary to GOPATH/bin"
-	@echo "  help     - Show this help message"
+	@echo "  all        - Run clean, lint, test, and build"
+	@echo "  build      - Build the binary"
+	@echo "  test       - Run tests"
+	@echo "  test-cover - Run tests with coverage"
+	@echo "  lint       - Run linter"
+	@echo "  clean      - Remove build artifacts"
+	@echo "  install    - Install binary to GOPATH/bin"
+	@echo "  help       - Show this help message"

@@ -2,10 +2,16 @@ package duckdb
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 	"os/exec"
 	"path/filepath"
+)
+
+// テスト時にモック化するための変数
+var (
+	execCommand   = exec.Command
+	tempDirFunc   = os.MkdirTemp
+	writeFileFunc = os.WriteFile
 )
 
 // Executor はDuckDBを実行するための構造体です
@@ -31,7 +37,7 @@ func (e *Executor) ExecuteDuckDB(s3Path string, tableName string) error {
 	sql := e.sqlGenerator.GenerateCompleteSQL(s3Path, tableName)
 
 	// 一時ファイルを作成
-	tempDir, err := ioutil.TempDir("", "dalv-")
+	tempDir, err := tempDirFunc("", "dalv-")
 	if err != nil {
 		return fmt.Errorf("一時ディレクトリの作成に失敗しました: %w", err)
 	}
@@ -39,13 +45,13 @@ func (e *Executor) ExecuteDuckDB(s3Path string, tableName string) error {
 
 	// SQLを一時ファイルに書き込み
 	sqlFilePath := filepath.Join(tempDir, "init.sql")
-	err = ioutil.WriteFile(sqlFilePath, []byte(sql), 0644)
+	err = writeFileFunc(sqlFilePath, []byte(sql), 0644)
 	if err != nil {
 		return fmt.Errorf("SQLファイルの作成に失敗しました: %w", err)
 	}
 
 	// DuckDBコマンドを実行
-	cmd := exec.Command("duckdb", "-init", sqlFilePath)
+	cmd := execCommand("duckdb", "-init", sqlFilePath)
 	cmd.Stdin = os.Stdin
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -61,7 +67,7 @@ func (e *Executor) ExecuteDuckDB(s3Path string, tableName string) error {
 
 // CheckDuckDBInstallation はDuckDBがインストールされているかを確認します
 func (e *Executor) CheckDuckDBInstallation() error {
-	cmd := exec.Command("duckdb", "--version")
+	cmd := execCommand("duckdb", "--version")
 	err := cmd.Run()
 	if err != nil {
 		return fmt.Errorf("DuckDBがインストールされていないか、実行できません: %w", err)
